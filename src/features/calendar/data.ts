@@ -161,7 +161,7 @@ export const demoEvents: CalendarEventViewModel[] = [
     endAt: "2026-05-06T09:30:00+07:00",
     timeZone: "Asia/Ho_Chi_Minh",
     visibility: "public",
-    status: "confirmed",
+    status: "active",
     color: "#0f9d65",
     calendarTitle: "Họp team",
     attendees: [attendeeA, attendeeB]
@@ -177,7 +177,7 @@ export const demoEvents: CalendarEventViewModel[] = [
     endAt: "2026-05-01T23:59:00+07:00",
     timeZone: "Asia/Ho_Chi_Minh",
     visibility: "public",
-    status: "confirmed",
+    status: "active",
     color: "#8d43f7",
     calendarTitle: "Ngày lễ Việt Nam",
     attendees: []
@@ -193,7 +193,7 @@ export const demoEvents: CalendarEventViewModel[] = [
     endAt: "2026-05-11T10:00:00+07:00",
     timeZone: "Asia/Ho_Chi_Minh",
     visibility: "public",
-    status: "confirmed",
+    status: "active",
     color: "#0f9d65",
     calendarTitle: "Họp team",
     attendees: []
@@ -209,7 +209,7 @@ export const demoEvents: CalendarEventViewModel[] = [
     endAt: "2026-05-13T15:00:00+07:00",
     timeZone: "Asia/Ho_Chi_Minh",
     visibility: "public",
-    status: "confirmed",
+    status: "active",
     color: "#4478f3",
     calendarTitle: "Lê Văn Phúc",
     attendees: []
@@ -225,7 +225,7 @@ export const demoEvents: CalendarEventViewModel[] = [
     endAt: "2026-05-18T16:00:00+07:00",
     timeZone: "Asia/Ho_Chi_Minh",
     visibility: "public",
-    status: "confirmed",
+    status: "active",
     color: "#f59e0b",
     calendarTitle: "Du lịch",
     attendees: []
@@ -241,7 +241,7 @@ export const demoEvents: CalendarEventViewModel[] = [
     endAt: "2026-05-26T09:00:00+07:00",
     timeZone: "Asia/Ho_Chi_Minh",
     visibility: "public",
-    status: "confirmed",
+    status: "active",
     color: "#0f9d65",
     calendarTitle: "Họp team",
     attendees: []
@@ -257,7 +257,7 @@ export const demoEvents: CalendarEventViewModel[] = [
     endAt: "2026-05-29T17:00:00+07:00",
     timeZone: "Asia/Ho_Chi_Minh",
     visibility: "public",
-    status: "confirmed",
+    status: "active",
     color: "#0f8e57",
     calendarTitle: "Họp giao ban",
     attendees: []
@@ -273,7 +273,7 @@ export const demoEvents: CalendarEventViewModel[] = [
     endAt: "2026-05-20T11:00:00+07:00",
     timeZone: "Asia/Ho_Chi_Minh",
     visibility: "public",
-    status: "confirmed",
+    status: "active",
     color: "#f05357",
     calendarTitle: "Tiến Đạt",
     attendees: []
@@ -289,7 +289,7 @@ export const demoEvents: CalendarEventViewModel[] = [
     endAt: "2026-05-23T12:00:00+07:00",
     timeZone: "Asia/Ho_Chi_Minh",
     visibility: "public",
-    status: "confirmed",
+    status: "active",
     color: "#12a86b",
     calendarTitle: "Workshop",
     attendees: []

@@ -786,7 +786,7 @@ function EventDialog({
       endAt: `${dateText}T10:00:00+07:00`,
       timeZone: "Asia/Ho_Chi_Minh",
       visibility: "public",
-      status: "confirmed",
+      status: "active",
       color: calendar.color,
       calendarTitle: calendar.title,
       attendees

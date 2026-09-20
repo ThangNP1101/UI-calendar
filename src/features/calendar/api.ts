@@ -1,17 +1,13 @@
-import axios from "axios"
+import { apiClient } from "@/api/axios"
 import type {
   Calendar,
   CalendarAccess,
   CreateCalendarRequest,
   CreateEventRequest,
   ID,
-  UserEventFeed
+  EventListItem,
+  UpdateEventRequest
 } from "./types"
-
-export const apiClient = axios.create({
-  baseURL: "/api/v1",
-  headers: { "Content-Type": "application/json" }
-})
 
 export async function getCalendars(search?: string) {
   const response = await apiClient.get<CalendarAccess[]>("/calendars", {
@@ -40,7 +36,7 @@ export async function getEvents(params?: {
   to?: string
   calendarID?: string
 }) {
-  const response = await apiClient.get<UserEventFeed[]>("/events", { params })
+  const response = await apiClient.get<EventListItem[]>("/events", { params })
   return response.data
 }
 
@@ -49,7 +45,7 @@ export async function createEvent(payload: CreateEventRequest) {
   return response.data
 }
 
-export async function updateEvent(id: ID, payload: Partial<CreateEventRequest>) {
+export async function updateEvent(id: ID, payload: UpdateEventRequest) {
   const response = await apiClient.patch(`/events/${id}`, payload)
   return response.data
 }
