@@ -1,4 +1,5 @@
 import {
+  addMilliseconds,
   addMonths,
   eachDayOfInterval,
   endOfMonth,
@@ -65,6 +66,7 @@ import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 import { demoCalendars, demoEvents } from "@/features/calendar/data"
+import { useCalendars, useEvents } from "@/features/calendar/hooks"
 import type { CalendarEventViewModel, CalendarViewModel } from "@/features/calendar/types"
 
 const weekDays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"]
@@ -98,8 +100,32 @@ function App() {
   const [selectedEvent, setSelectedEvent] = useState<CalendarEventViewModel | null>(null)
   const [calendarDialog, setCalendarDialog] = useState<CalendarDialogState>(null)
   const [eventDialogOpen, setEventDialogOpen] = useState(false)
+  const [recurrenceEditBlocked, setRecurrenceEditBlocked] = useState(false)
   const [calendars, setCalendars] = useState<CalendarViewModel[]>(demoCalendars)
   const [events, setEvents] = useState<CalendarEventViewModel[]>(demoEvents)
+  const visibleRange = useMemo(() => {
+    const from = startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 1 })
+    const to = addMilliseconds(endOfWeek(endOfMonth(currentMonth), { weekStartsOn: 1 }), 1)
+    return { from: from.toISOString(), to: to.toISOString() }
+  }, [currentMonth])
+  const calendarsQuery = useCalendars(search)
+  const eventsQuery = useEvents({ search: eventSearch, ...visibleRange })
+
+  useEffect(() => {
+    if (calendarsQuery.data) setCalendars(calendarsQuery.data)
+  }, [calendarsQuery.data])
+
+  useEffect(() => {
+    if (!eventsQuery.data) return
+    setEvents(
+      eventsQuery.data.map((event) => {
+        const calendar = calendars.find((item) => item.id === event.calendarId)
+        return calendar
+          ? { ...event, color: calendar.color, calendarTitle: calendar.title }
+          : event
+      })
+    )
+  }, [calendars, eventsQuery.data])
 
   const filteredEvents = useMemo(
     () =>
@@ -196,6 +222,11 @@ function App() {
               event={selectedEvent}
               onClose={() => setSelectedEvent(null)}
               onEdit={() => {
+                if (selectedEvent.isGeneratedOccurrence) {
+                  setSelectedEvent(null)
+                  setRecurrenceEditBlocked(true)
+                  return
+                }
                 setSelectedEvent(null)
                 setEventDialogOpen(true)
               }}
@@ -221,6 +252,21 @@ function App() {
         defaultDate={selectedDate}
         onCreate={createEvent}
       />
+      <Dialog open={recurrenceEditBlocked} onOpenChange={setRecurrenceEditBlocked}>
+        <DialogContent className="modal-surface max-w-[348px]">
+          <DialogHeader>
+            <DialogTitle className="text-[14px] font-bold text-[#26332d]">Không thể chỉnh sửa lần lặp</DialogTitle>
+          </DialogHeader>
+          <p className="text-[11px] leading-5 text-[#56635c]">
+            Sự kiện này được tạo từ một chuỗi lặp. API tạo sự kiện độc lập cho một lần lặp chưa được backend cung cấp.
+          </p>
+          <DialogFooter>
+            <Button className="h-8 rounded-[5px] bg-[#118b5b] px-4 text-[10px] text-white hover:bg-[#087048]" onClick={() => setRecurrenceEditBlocked(false)}>
+              Đóng
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <MobileDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}

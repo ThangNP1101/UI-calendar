@@ -5,7 +5,7 @@ import type {
   CreateCalendarRequest,
   CreateEventRequest,
   ID,
-  EventListItem,
+  UserEventFeed,
   UpdateEventRequest
 } from "./types"
 
@@ -36,7 +36,7 @@ export async function getEvents(params?: {
   to?: string
   calendarID?: string
 }) {
-  const response = await apiClient.get<EventListItem[]>("/events", { params })
+  const response = await apiClient.get<UserEventFeed[]>("/events", { params })
   return response.data
 }
 

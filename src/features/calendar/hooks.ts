@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createCalendar, createEvent, deleteCalendar, deleteEvent, getCalendars, getEvents, updateCalendar, updateEvent } from "./api"
-import { demoCalendars, demoEvents } from "./data"
+import { demoCalendars } from "./data"
+import { generateEventOccurrences } from "./recurrence"
 import type {
   CalendarEventViewModel,
   CalendarViewModel,
@@ -41,7 +42,6 @@ export function useCalendars(search = "") {
       )
     },
     retry: false,
-    placeholderData: demoCalendars
   })
 }
 
@@ -50,29 +50,37 @@ export function useEvents(params?: { search?: string; from?: string; to?: string
     queryKey: ["events", params],
     queryFn: async (): Promise<CalendarEventViewModel[]> => {
       const items = await getEvents(params)
-      return items.flatMap((item) =>
-        [
-          {
-            id: item.id,
-            calendarId: item.calendarId,
-            title: item.title,
-            description: item.description ?? "",
-            location: item.location ?? "",
-            link: item.link ?? "",
-            startAt: item.startAt,
-            endAt: item.endAt,
-            timeZone: item.timeZone,
-            visibility: item.visibility,
-            status: item.status,
-            color: demoCalendars.find((calendar) => calendar.id === item.calendarId)?.color ?? "#7c8991",
-            calendarTitle: demoCalendars.find((calendar) => calendar.id === item.calendarId)?.title ?? "Lịch",
-            attendees: []
-          }
-        ]
-      )
+      return items.flatMap((item) => {
+        if (!item.data) return []
+        const calendar = demoCalendars.find((candidate) => candidate.id === item.calendarId)
+        return generateEventOccurrences({
+          event: item,
+          from: params?.from ?? item.data.startAt,
+          to: params?.to ?? item.data.endAt
+        }).map((occurrence) => ({
+          id: occurrence.renderId,
+          calendarId: item.calendarId,
+          title: item.data?.title ?? "",
+          description: item.data?.description ?? "",
+          location: item.data?.location ?? "",
+          link: item.data?.link ?? "",
+          startAt: occurrence.startAt,
+          endAt: occurrence.endAt,
+          timeZone: item.data?.timeZone ?? "UTC",
+          visibility: item.data?.visibility ?? "public",
+          status: item.data?.status ?? "active",
+          color: calendar?.color ?? "#7c8991",
+          calendarTitle: calendar?.title ?? "Lịch",
+          attendees: [],
+          sourceEventId: item.id,
+          eventSeriesId: item.eventSeriesId,
+          persistedId: occurrence.isGeneratedOccurrence ? undefined : item.id,
+          recurrenceRule: item.recurrenceRule,
+          isGeneratedOccurrence: occurrence.isGeneratedOccurrence
+        }))
+      })
     },
     retry: false,
-    placeholderData: demoEvents
   })
 }
 

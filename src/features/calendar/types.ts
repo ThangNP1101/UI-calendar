@@ -4,6 +4,15 @@ export type CalendarType = "default" | "custom"
 export type CalendarRole = "owner" | "admin" | "follower"
 export type EventVisibility = "public" | "private"
 export type EventStatus = "active" | "cancelled"
+export type RecurrenceFrequency = "daily" | "weekly" | "monthly"
+
+export type RecurrenceRule = {
+  frequency: RecurrenceFrequency
+  interval: number
+  until?: string
+  byWeekday?: string[]
+  byMonthDay?: number[]
+}
 
 export type Calendar = {
   id: ID
@@ -54,23 +63,9 @@ export type UserEventFeed = {
   eventSeriesId: ID
   accessReason: string
   data?: EventData
+  recurrenceRule?: RecurrenceRule
   projectionVersion?: number
   updatedAt: string
-}
-
-export type EventListItem = {
-  id: ID
-  calendarId: ID
-  accessReason: string
-  title: string
-  description?: string
-  location?: string
-  link?: string
-  startAt: string
-  endAt: string
-  timeZone: string
-  visibility: EventVisibility
-  status: EventStatus
 }
 
 export type AttendeeInput = {
@@ -153,4 +148,9 @@ export type CalendarEventViewModel = {
   color: string
   calendarTitle: string
   attendees: Array<{ id: ID; name: string; initials: string; color: string }>
+  sourceEventId?: ID
+  eventSeriesId?: ID
+  persistedId?: ID
+  recurrenceRule?: RecurrenceRule
+  isGeneratedOccurrence?: boolean
 }
