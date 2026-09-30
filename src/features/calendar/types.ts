@@ -1,156 +1,204 @@
-export type ID = string
+export type ID = string;
 
-export type CalendarType = "default" | "custom"
-export type CalendarRole = "owner" | "admin" | "follower"
-export type EventVisibility = "public" | "private"
-export type EventStatus = "active" | "cancelled"
-export type RecurrenceFrequency = "daily" | "weekly" | "monthly"
+export type CalendarType = "default" | "custom";
+export type CalendarRole = "owner" | "admin" | "follower";
+export type EventVisibility = "public" | "private";
+export type EventStatus = "active" | "cancelled";
+export type RecurrenceFrequency = "daily" | "weekly" | "monthly";
 
 export type RecurrenceRule = {
-  frequency: RecurrenceFrequency
-  interval: number
-  until?: string
-  byWeekday?: string[]
-  byMonthDay?: number[]
-}
+  frequency: RecurrenceFrequency;
+  interval: number;
+  until?: string;
+  byWeekday?: string[];
+  byMonthDay?: number[];
+};
 
 export type Calendar = {
-  id: ID
-  ownerId: ID
-  ownerName?: string
-  type: CalendarType
-  title: string
-  color: string
-  description?: string
-  createdAt: string
-  updatedAt: string
-  deletedAt?: string
-}
+  id: ID;
+  ownerId: ID;
+  ownerName?: string;
+  type: CalendarType;
+  title: string;
+  color: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
+};
 
 export type CalendarAccess = {
-  id: ID
-  userId: ID
-  calendarId: ID
-  role: CalendarRole
-  accessReason: string
-  calendar: CalendarAccessSnapshot
-  status: string
-  updatedAt: string
-}
+  id: ID;
+  userId: ID;
+  calendarId: ID;
+  role: CalendarRole;
+  accessReason: string;
+  calendar: CalendarAccessSnapshot;
+  status: string;
+  updatedAt: string;
+};
 
 export type CalendarAccessSnapshot = {
-  color: string
-  ownerName: string
-  title: string
-}
+  color: string;
+  ownerName: string;
+  title: string;
+};
 
 export type EventData = {
-  title: string
-  description?: string
-  location?: string
-  link?: string
-  startAt: string
-  endAt: string
-  timeZone?: string
-  visibility: EventVisibility
-  status: EventStatus
-}
+  title: string;
+  description?: string;
+  location?: string;
+  link?: string;
+  startAt: string;
+  endAt: string;
+  timeZone?: string;
+  visibility: EventVisibility;
+  status: EventStatus;
+};
 
 export type UserEventFeed = {
-  id: ID
-  userId: ID
-  calendarId: ID
-  eventSeriesId: ID
-  accessReason: string
-  data?: EventData
-  recurrenceRule?: RecurrenceRule
-  projectionVersion?: number
-  updatedAt: string
-}
+  id: ID;
+  userId: ID;
+  calendarId: ID;
+  eventSeriesId: ID;
+  accessReason: string;
+  data?: EventData;
+  recurrenceRule?: RecurrenceRule;
+  projectionVersion?: number;
+  updatedAt: string;
+};
+
+export type EventListItem = {
+  id: string;
+  userId: string;
+  calendarId: string;
+  eventSeriesId: string;
+  accessReason: string;
+  data: {
+    title: string;
+    description?: string;
+    location?: string;
+    link?: string;
+    startAt: string;
+    endAt: string;
+    timeZone: string;
+    visibility: EventVisibility;
+    status: EventStatus;
+  };
+  projectionVersion: number;
+  updatedAt: string;
+};
 
 export type AttendeeInput = {
-  userId: ID
-  userName: string
-}
+  userId: ID;
+  userName: string;
+};
 
 export type EventAttendee = {
-  acceptedAt?: string
-  calendarId?: ID
-  deletedAt?: string
-  eventSeriesId?: ID
-  id?: ID
-  invitedAt?: string
-  invitedBy?: ID
-  responseStatus?: string
-  userId: ID
-  userName: string
-}
+  acceptedAt?: string;
+  calendarId?: ID;
+  deletedAt?: string;
+  eventSeriesId?: ID;
+  id?: ID;
+  invitedAt?: string;
+  invitedBy?: ID;
+  responseStatus?: string;
+  userId: ID;
+  userName: string;
+};
 
 export type InitialMemberInput = {
-  role: CalendarRole
-  userName: string
-  userid: ID
-}
+  role: CalendarRole;
+  userName: string;
+  userid: ID;
+};
 
 export type CreateCalendarRequest = {
-  type: CalendarType
-  title: string
-  color: string
-  description: string
-  members?: InitialMemberInput[]
-}
+  type: CalendarType;
+  title: string;
+  color: string;
+  description: string;
+  members?: InitialMemberInput[];
+};
+
+export type EventCalendarSummary = {
+  id: ID;
+  title: string;
+  type?: string;
+  color: string;
+  accessReason?: string;
+};
+
+export type EventItem = {
+  id: ID;
+  seriesId: ID;
+  calendar: EventCalendarSummary;
+  title: string;
+  description?: string;
+  location?: string;
+  link?: string;
+  attachments?: string[];
+  visibility: EventVisibility;
+  status: EventStatus;
+  startAt: string;
+  endAt: string;
+  timeZone?: string;
+  isRecurring?: boolean;
+  isException?: boolean;
+  attendeeStatus?: string;
+};
 
 export type CreateEventRequest = {
-  calendarId: ID
-  title: string
-  description: string
-  location: string
-  link: string
-  attendees: EventAttendee[]
-  startAt: string
-  endAt: string
-  timeZone: string
-  visibility: EventVisibility
-  attachments?: unknown[]
-  recurrenceRule?: unknown
-}
+  calendarId: ID;
+  title: string;
+  description: string;
+  location: string;
+  link: string;
+  attendees: EventAttendee[];
+  startAt: string;
+  endAt: string;
+  timeZone: string;
+  visibility: EventVisibility;
+  attachments?: unknown[];
+  recurrenceRule?: RecurrenceRule;
+};
 
 export type UpdateEventRequest = {
-  title?: string
-  description?: string
-  location?: string
-  link?: string
-  startAt?: string
-  endAt?: string
-  timeZone?: string
-  visibility?: EventVisibility
-  attendees?: AttendeeInput[]
-}
+  title?: string;
+  description?: string;
+  location?: string;
+  link?: string;
+  startAt?: string;
+  endAt?: string;
+  timeZone?: string;
+  visibility?: EventVisibility;
+  attendees?: AttendeeInput[];
+};
 
 export type CalendarViewModel = Omit<Calendar, "type"> & {
-  type: string
-  isVisible: boolean
-  members?: Array<{ id: ID; name: string; color: string; initials: string }>
-}
+  type: string;
+  isVisible: boolean;
+  members?: Array<{ id: ID; name: string; color: string; initials: string }>;
+};
 
 export type CalendarEventViewModel = {
-  id: ID
-  calendarId: ID
-  title: string
-  description: string
-  location: string
-  link: string
-  startAt: string
-  endAt: string
-  timeZone: string
-  visibility: EventVisibility
-  status: EventStatus
-  color: string
-  calendarTitle: string
-  attendees: Array<{ id: ID; name: string; initials: string; color: string }>
-  sourceEventId?: ID
-  eventSeriesId?: ID
-  persistedId?: ID
-  recurrenceRule?: RecurrenceRule
-  isGeneratedOccurrence?: boolean
-}
+  id: ID;
+  calendarId: ID;
+  title: string;
+  description: string;
+  location: string;
+  link: string;
+  startAt: string;
+  endAt: string;
+  timeZone: string;
+  visibility: EventVisibility;
+  status: EventStatus;
+  color: string;
+  calendarTitle: string;
+  attendees: Array<{ id: ID; name: string; initials: string; color: string }>;
+  sourceEventId?: ID;
+  eventSeriesId?: ID;
+  persistedId?: ID;
+  recurrenceRule?: RecurrenceRule;
+  isGeneratedOccurrence?: boolean;
+};

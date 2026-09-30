@@ -1,35 +1,47 @@
-const codeVerifierCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
+const codeVerifierCharacters =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
 
-function base64UrlEncode(bytes: Uint8Array) {
-  let binary = ""
-  bytes.forEach((byte) => {
-    binary += String.fromCharCode(byte)
-  })
+export function generateRandomString(length: number) {
+  let randomString = "";
+  const cryptoObj = window.crypto;
 
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/u, "")
-}
+  if (cryptoObj?.getRandomValues) {
+    const randomValues = new Uint8Array(length);
+    cryptoObj.getRandomValues(randomValues);
 
-export function generateCodeVerifier(length = 64) {
-  const randomBytes = new Uint8Array(length)
-  crypto.getRandomValues(randomBytes)
+    randomString = Array.from(randomValues)
+      .map(
+        (value) =>
+          codeVerifierCharacters[value % codeVerifierCharacters.length],
+      )
+      .join("");
+  } else {
+    while (randomString.length < length) {
+      randomString += codeVerifierCharacters.charAt(
+        Math.floor(Math.random() * codeVerifierCharacters.length),
+      );
+    }
+  }
 
-  return Array.from(randomBytes, (byte) => codeVerifierCharacters[byte % codeVerifierCharacters.length]).join("")
+  return randomString;
 }
 
 export async function generateCodeChallenge(codeVerifier: string) {
-  const data = new TextEncoder().encode(codeVerifier)
-  const digest = await crypto.subtle.digest("SHA-256", data)
-  return base64UrlEncode(new Uint8Array(digest))
+  const encoder = new TextEncoder();
+  const data = encoder.encode(codeVerifier);
+
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+
+  return btoa(String.fromCharCode(...new Uint8Array(hashBuffer)))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
 
 export function generateRandomState() {
-  const bytes = new Uint8Array(32)
-  crypto.getRandomValues(bytes)
-  return base64UrlEncode(bytes)
+  return generateRandomString(43);
 }
 
 export function generateNonce() {
-  const bytes = new Uint8Array(32)
-  crypto.getRandomValues(bytes)
-  return base64UrlEncode(bytes)
+  return generateRandomString(43);
 }

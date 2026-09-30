@@ -1,35 +1,35 @@
-import { useCallback, useEffect, useState } from "react"
-import CalendarApp from "./App"
-import { AuthProvider, useAuth } from "./auth/auth.context"
-import { CallbackPage } from "./auth/routes/CallbackPage"
-import { LoginPage } from "./auth/routes/LoginPage"
+import { useCallback, useEffect, useState } from "react";
+import CalendarApp from "./App";
+import { AuthProvider, useAuth } from "./auth/auth.context";
+import { CallbackPage } from "./auth/routes/CallbackPage";
+import { LoginPage } from "./auth/routes/LoginPage";
 
 function getCurrentPath() {
-  return window.location.pathname
+  return window.location.pathname;
 }
 
 function navigate(path: string) {
-  window.history.pushState({}, "", path)
-  window.dispatchEvent(new PopStateEvent("popstate"))
+  window.history.pushState({}, "", path);
+  window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
-  const { config, status } = useAuth()
+  const { config, status } = useAuth();
 
   useEffect(() => {
     if (config.authEnabled && status === "unauthenticated") {
-      navigate("/auth/login")
+      navigate("/auth/login");
     }
-  }, [config.authEnabled, status])
+  }, [config.authEnabled, status]);
 
-  if (!config.authEnabled) return children
+  if (!config.authEnabled) return children;
 
   if (status === "loading") {
     return (
       <main className="grid min-h-screen place-items-center bg-[#eef2f1] text-sm text-[#56635c]">
         Đang kiểm tra phiên đăng nhập...
       </main>
-    )
+    );
   }
 
   if (status !== "authenticated") {
@@ -37,33 +37,37 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
       <main className="grid min-h-screen place-items-center bg-[#eef2f1] text-sm text-[#56635c]">
         Đang chuyển hướng đăng nhập...
       </main>
-    )
+    );
   }
 
-  return children
+  return children;
 }
 
 function RoutedApp() {
-  const [path, setPath] = useState(getCurrentPath)
-  const handleNavigate = useCallback((nextPath: string) => navigate(nextPath), [])
+  const [path, setPath] = useState(getCurrentPath);
+  const handleNavigate = useCallback(
+    (nextPath: string) => navigate(nextPath),
+    [],
+  );
 
   useEffect(() => {
     function handlePopState() {
-      setPath(getCurrentPath())
+      setPath(getCurrentPath());
     }
 
-    window.addEventListener("popstate", handlePopState)
-    return () => window.removeEventListener("popstate", handlePopState)
-  }, [])
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
-  if (path === "/auth/login") return <LoginPage />
-  if (path === "/auth/callback") return <CallbackPage onComplete={handleNavigate} />
+  if (path === "/auth/login") return <LoginPage />;
+  if (path === "/auth/callback")
+    return <CallbackPage onComplete={handleNavigate} />;
 
   return (
     <RequireAuth>
       <CalendarApp />
     </RequireAuth>
-  )
+  );
 }
 
 export default function RootApp() {
@@ -71,5 +75,5 @@ export default function RootApp() {
     <AuthProvider>
       <RoutedApp />
     </AuthProvider>
-  )
+  );
 }
